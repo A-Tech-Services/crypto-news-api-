@@ -1,0 +1,30 @@
+.news-container{
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-gap: 2rem;
+    align-items: center;
+    margin-inline: auto;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.news-card{
+    width: 35rem;
+    border: 1px solid rgb(207, 207, 207);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.card-image{
+    width: 100%;
+    border-radius: 1rem;
+}
+
+.card-image img{
+    width: 100%;
+    border-radius: 1rem;
+}
+
+.news-card h2, p{
+    text-align: start;
+}
