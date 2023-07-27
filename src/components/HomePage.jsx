@@ -6,6 +6,8 @@ import "./HomePageStyles.css"
 const HomePage = () => {
     const [coinNewsDatas, setCoinNews] = useState([]);
     const [page, setPage] = useState(1);
+    const [error, setError] = useState(null);
+    const [load, setLoad] = useState(false);
     
     
 
@@ -29,52 +31,77 @@ const HomePage = () => {
         
         axios.request(options)
         .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
+            setLoad(!load);
             setCoinNews(response.data.data[0].screen_data.news);
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) => {
+            setLoad(!load);
+            setError(err.message);
+        });
     }, [page])
 
 
     const tagRegExp =  new RegExp('<\s*[^>]*>', 'g');
 
+    // nextpage button
     const nextPage = () => {
             let newValue = page + 1;
             setPage(newValue);
         }
 
+    
+    // previous page button
     const previousPage = () => {
         let newValue = page - 1;
         setPage(newValue);
     }
 
-  return (
+    // handling error state.
+    if(error){
+        return (
+            <div className='error'>
+                <p>An Error Occured: {error}</p>;
+            </div>
+        )
+    } else if (!load){
+        return(
+            <div className="loading">
+                <img 
+                    src='https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911'
+                    alt='loading GIF'
+                />
+            </div>
+        )
+    } else {
+        return (
 
-    <div>
-        <h1>Daily Crypto News</h1>
-        <div className='news-container'>
-
-        {
-            coinNewsDatas.map((coinNewsData) => {
-                return(
-                    <div className='news-card' key={coinNewsData.news_ID}>
-                        <div className="card-image">
-                            <img src={coinNewsData.related_image_big}/>
-                        </div>
-                        <h2>{coinNewsData.HEADLINE}</h2>
-                        <p>{coinNewsData.BODY.replace(tagRegExp, '')}</p>
-                    </div>
-                );
-            })
-        }
-
-        <div className="btns">
-            <button onClick={previousPage}>Previous Page</button>
-            <button onClick={nextPage}>Next Page</button>
-        </div>
-        </div>
-    </div>
-  )
+            <div>
+                <h1>Daily Crypto News</h1>
+                <div className='news-container'>
+        
+                {
+                    coinNewsDatas.map((coinNewsData) => {
+                        return(
+                            <div className='news-card' key={coinNewsData.news_ID}>
+                                <div className="card-image">
+                                    <img src={coinNewsData.related_image_big}/>
+                                </div>
+                                <h2>{coinNewsData.HEADLINE}</h2>
+                                <p>{coinNewsData.BODY.replace(tagRegExp, '')}</p>
+                            </div>
+                        );
+                    })
+                }
+        
+                <div className="btns">
+                    <button onClick={previousPage}>Previous Page</button>
+                    <button onClick={nextPage}>Next Page</button>
+                </div>
+                </div>
+            </div>
+          )
+    }
 }
 
 export default HomePage
